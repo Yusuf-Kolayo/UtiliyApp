@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:utilities_app/Api/CountriesApi.dart';
 import 'package:utilities_app/Constants.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:utilities_app/drawer.dart';
 import 'dart:developer';
 
 import 'package:utilities_app/models/country.dart';
@@ -14,14 +15,15 @@ import 'package:utilities_app/size_config.dart';
 
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  static String routeName = 'HomePage';
 
-  final String title;
+  const MyHomePage({super.key});
+
+  final String title = 'Home Page';
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-
 
 
 
@@ -35,17 +37,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget countriesContainer () {
     return SizedBox(
-        height: 500,
+        height: getProportionateScreenHeight(500),
         child: ListView.builder(
           itemCount: countries.length,
           itemBuilder:(context, index) {
               return GestureDetector(
                 onTap: () {
-                    // log(countries[index].toString());
+                    log(countries[index].toString());
                     setState(() {
                       country.name = countries[index]['name']['common'];
                       country.cca3 = countries[index]['cca3'];
                       country.capital = countries[index]['capital'][0];
+                      country.region = countries[index]['region'];
                       country.flagUrl = countries[index]['flags']['svg'];
                       country.languages = countries[index]['languages'].values.toList();
                        
@@ -53,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: ListTile(
                   leading: const Icon(Icons.list),
+                  // tileColor: Colors.blue.shade50,
                     trailing: Text(  
                       countries[index]['cca3'],
                       style: const TextStyle(color: Colors.green, fontSize: 15),
@@ -85,50 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
           )
     ],
       ),
-       drawer: Drawer(
-        child: ListView(
-          padding: const EdgeInsets.all(0),
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: primaryColor,
-              ), //BoxDecoration
-              child: UserAccountsDrawerHeader(
-                decoration: BoxDecoration(color: primaryColor),
-                accountName: Text(
-                  "Yusuf Kolayo",
-                  style: TextStyle(fontSize: 18),
-                ),
-                accountEmail: Text("yusufkolayor@gmail.com"),
-              ), //UserAccountDrawerHeader
-            ), //DrawerHeader
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text(' Countries '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-           
-            ListTile(
-              leading: const Icon(Icons.workspace_premium),
-              title: const Text(' Currency '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-
-             ListTile(
-              leading: const Icon(Icons.book),
-              title: const Text(' Weather '),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            
-          ],
-        ),
-      ),
+      drawer: drawer(context),
       body:  Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -140,20 +101,85 @@ class _MyHomePageState extends State<MyHomePage> {
                   visible: (country.name.isNotEmpty),
                   child: Column(
                     children: [
-                       Text(
-                        country.name,
-                        style: const TextStyle(fontSize: 30), 
-                      ),
                        Padding(
-                         padding: const EdgeInsets.only(bottom:15, top: 5),
+                         padding: const EdgeInsets.all(8.0),
+                         child: Row(
+                           children: [
+                             SizedBox(
+                              width: getProportionateScreenWidth(100),
+                              child: const Text('Country', style: TextStyle(fontSize: 18)),
+                             ),
+                             Text(
+                                  country.name,
+                                  style: const TextStyle(fontSize: 18), 
+                              ),
+                           ],
+                         ),
+                       ),
+                         Padding(
+                           padding: const EdgeInsets.all(8.0),
+                           child: Row(
+                           children: [
+                             SizedBox(
+                              width: getProportionateScreenWidth(100),
+                              child: const Text('Capital', style: TextStyle(fontSize: 18)),
+                             ),
+                             Text(
+                                  country.capital,
+                                  style: const TextStyle(fontSize: 18), 
+                              ),
+                           ],
+                                                ),
+                         ),
+                         Padding(
+                           padding: const EdgeInsets.all(8.0),
+                           child: Row(
+                           children: [
+                             SizedBox(
+                              width: getProportionateScreenWidth(100),
+                              child: const Text('Region', style: TextStyle(fontSize: 18)),
+                             ),
+                             Text(
+                                  country.region,
+                                  style: const TextStyle(fontSize: 18), 
+                              ),
+                           ],
+                           ),
+                         ),
+                         Padding(
+                           padding: const EdgeInsets.all(8.0),
+                           child: Row(
+                           children: [
+                             SizedBox(
+                              width: getProportionateScreenWidth(100),
+                              child: const Text('Languages', style: TextStyle(fontSize: 18)),
+                             ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                   ...List.generate(
+                                    country.languages.length, (index) {
+                                       return Text(
+                                        country.languages[index],
+                                        style: const TextStyle(fontSize: 18),
+                                      );
+                                    })
+                                ],
+                              )
+                           ],
+                                                ),
+                         ),
+                       Padding(
+                         padding: const EdgeInsets.only(bottom:25, top: 10),
                          child: SvgPicture.network(
                             country.flagUrl,
                             width: getProportionateScreenHeight(300),
-                                             ),
+                         ),
                        )
                     ],
                   )
                 ),
+                const SizedBox(height: 10),
                 Consumer(
                   builder:(context, ref, child) {
                       if (countries.isNotEmpty) {

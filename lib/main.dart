@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:utilities_app/Constants.dart';
 import 'package:utilities_app/HomePage.dart';
+import 'package:utilities_app/routes.dart';
 
 
 void main() {
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Utility App'),
+      home: const MyHomePage(),
+      routes: routes ,
       debugShowCheckedModeBanner: false,
     );
   }
