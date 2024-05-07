@@ -82,4 +82,15 @@ class CurrenciesApi {
            return response;
       }
 
+
+
+
+
+      Future<Map<String, dynamic>>  convertCurrency({required String fromCurrency, required String toCurrency, required String amount}) async {
+           String endpoint = '/convert?from=$fromCurrency&to=$toCurrency&amount=$amount';
+           String url = baseUrl+endpoint;
+           var response = await handleRequest(method: 'get',url: url, body: {});
+           return response;
+      }
+
 }

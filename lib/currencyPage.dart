@@ -31,6 +31,9 @@ class _CurrencyPageState extends State<CurrencyPage> {
       String fromAmount = '';
       String toAmount = '';
 
+      TextEditingController fromController = TextEditingController();
+      TextEditingController toController = TextEditingController();
+
 
 
 
@@ -72,8 +75,9 @@ class _CurrencyPageState extends State<CurrencyPage> {
                   SizedBox(
                     width: getProportionateScreenWidth(100),
                     child: TextFormField(
+                          controller: fromController,
                           keyboardType: TextInputType.number,
-                          // initialValue: '0.0',
+                          // initialValue: fromAmount,
                           onChanged: (value) {
                             fromAmount = value;
                           },
@@ -99,8 +103,9 @@ class _CurrencyPageState extends State<CurrencyPage> {
                   SizedBox(
                     width: getProportionateScreenWidth(100),
                     child: TextFormField(
+                          controller: toController,
                           keyboardType: TextInputType.number,
-                          // initialValue: '0.0',
+                          // initialValue: toAmount,
                           onChanged: (value) {
                             toAmount = value;
                           },
@@ -124,12 +129,28 @@ class _CurrencyPageState extends State<CurrencyPage> {
             Padding(
               padding: const EdgeInsets.only(top:25),
               child: TextButton(
-                onPressed: () {
+                onPressed: () async {
                   log('From Currency: $selectedFromCurrency');
                   log('To Currency: $selectedToCurrency');
                     log('From Amount: $fromAmount');
                     log('To Amount: $toAmount');
-      
+
+                     final response = await  CurrenciesApi().convertCurrency(fromCurrency: selectedFromCurrency, toCurrency: selectedToCurrency, amount: fromAmount);
+                     log(response.toString());
+                    if (response['status']=='success') {
+                       setState(() {
+                         toController.text = response['data']['result'].toString();
+                       });   
+                    } else {
+                         // ignore: use_build_context_synchronously
+                         ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Something went wrong, please try again', style: TextStyle(fontSize: 18)),
+                                duration: Duration(seconds: 3), // Adjust the duration as needed
+                                backgroundColor: Colors.black, // Customize the background color
+                              ),
+                            ); 
+                    }
       
                 }, 
                 style: ButtonStyle(
