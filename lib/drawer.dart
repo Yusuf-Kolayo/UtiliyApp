@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:utilities_app/Constants.dart';
 import 'package:utilities_app/HomePage.dart';
 import 'package:utilities_app/currencyPage.dart';
+import 'package:utilities_app/weatherScreen.dart';
 
 Widget drawer (context) {
   return Drawer(
@@ -44,6 +45,7 @@ Widget drawer (context) {
               title: const Text(' Weather '),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.pushNamed(context, WeatherScreen.routeName);
               },
             ),
             
